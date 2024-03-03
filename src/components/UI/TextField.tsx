@@ -29,12 +29,12 @@ const TextField = (
       <input
         ref={ref}
         className={twMerge(
-          "placeholder:text-opacity-50 outline-none py-3 text-graphite-bolder text-base-m flex-1",
+          "placeholder:text-opacity-50 outline-none py-3 w-full min-w-32 text-graphite-bolder text-base-m flex-1",
           error && "text-error"
         )}
         {...props}
       />
-      {error && <span className="text-base-s text-error">{error}</span>}
+      {error && <p className="text-base-s text-error line-clamp-2">{error}</p>}
     </div>
   );
 };

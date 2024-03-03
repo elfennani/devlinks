@@ -43,6 +43,6 @@ export const Active: Story = {
 export const Error: Story = {
   args: {
     value: "Text Field Error",
-    error: "Please check again"
+    error: "Please check again!"
   },
 };
