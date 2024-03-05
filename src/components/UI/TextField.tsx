@@ -19,7 +19,7 @@ const TextField = (
   return (
     <div
       className={twMerge(
-        "flex gap-3 items-center w-96 bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
+        "flex gap-3 items-center bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
         error && "!border-error focus-within:!shadow-none"
       )}
     >
