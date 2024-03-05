@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,html,svelte}"],
   theme: {
+    fontFamily: {
+      sans: ["Instrument Sans", "Helvetica", "Arial", "sans-serif"],
+    },
     fontSize: {
       "heading-m": [
         "2rem",
@@ -23,6 +26,7 @@ export default {
     extend: {
       boxShadow: {
         focused: "0px 0px 32px 0px rgba(99, 60, 255, 0.25)",
+        list: "0px 0px 32px 0px rgba(0, 0, 0, 0.10)",
       },
       colors: {
         primary: {
@@ -38,6 +42,16 @@ export default {
         },
         error: "#FF3939",
         white: "#FFFFFF",
+      },
+      animation: {
+        fade: "fadeIn .15s ease-in-out",
+      },
+
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
       },
     },
   },
