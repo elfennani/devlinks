@@ -24,7 +24,7 @@ type DropdownProps = {
 };
 
 const Dropdown = ({ error, children, onChange }: DropdownProps) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [selected, setSelected] = useState<string>(getDefault());
   const containerRef = useRef<HTMLButtonElement>(null);
 
