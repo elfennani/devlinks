@@ -1,8 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import useUser from "../../hooks/useUser";
 
 type Props = {};
 
 function AuthLayout({}: Props) {
+  const { data } = useUser();
+
+  if (!!data?.data.user) return <Navigate to="/" replace />;
+
   return (
     <main className="bg-graphite-light min-h-dvh flex flex-col gap-16 sm:gap-14 items-start max-sm:p-8 sm:items-center sm:justify-center">
       <img

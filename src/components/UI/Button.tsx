@@ -5,6 +5,7 @@ type Props = {
   primary?: boolean;
   onClick?: () => void;
   disabled?: boolean;
+  type?: "submit" | "reset" | "button";
 };
 
 const Button = ({ label, primary, ...props }: Props) => {

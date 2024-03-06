@@ -7,19 +7,19 @@ type InputProps = React.DetailedHTMLProps<
   HTMLInputElement
 >;
 
-type Props = {
+export type TextFieldProps = {
   icon?: string;
   error?: string;
 } & InputProps;
 
 const TextField = (
-  { icon, error, ...props }: Props,
+  { icon, error, ...props }: TextFieldProps,
   ref: ForwardedRef<HTMLInputElement>
 ) => {
   return (
     <div
       className={twMerge(
-        "flex gap-3 items-center bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
+        "flex gap-3 items-center overflow-hidden bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
         error && "!border-error focus-within:!shadow-none"
       )}
     >
@@ -28,15 +28,19 @@ const TextField = (
       )}
       <input
         ref={ref}
-        className={twMerge(
-          "placeholder:text-opacity-50 outline-none py-3 w-full min-w-32 text-graphite-bolder text-base-m flex-1",
-          error && "text-error"
-        )}
         {...props}
+        className={twMerge(
+          "placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 text-graphite-bolder text-base-m flex-1",
+          error && "text-error text-base-m",
+          props.className
+        )}
       />
       {error && <p className="text-base-s text-error line-clamp-2">{error}</p>}
     </div>
   );
 };
 
-export default forwardRef<HTMLInputElement, Props>(TextField);
+export default forwardRef<HTMLInputElement, TextFieldProps>(TextField);
+
+//placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 text-base-m flex-1
+//placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 flex-1 text-error
