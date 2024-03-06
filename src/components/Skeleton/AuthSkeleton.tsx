@@ -1,6 +1,4 @@
-type Props = {};
-
-const AuthSkeleton = (props: Props) => {
+const AuthSkeleton = () => {
   return (
     <main className="bg-graphite-light min-h-dvh flex flex-col gap-16 sm:gap-14 items-start max-sm:p-8 sm:items-center sm:justify-center">
       <div className="h-10 w-48 bg-graphite-normal rounded-lg animate-pulse" />
