@@ -17,7 +17,7 @@ const DropdownContext = createContext({
 
 type OptionComponent = ReactElement<OptionProps, typeof Option>;
 
-type DropdownProps = {
+export type DropdownProps = {
   error?: string;
   onChange?: (value: string) => void;
   children: OptionComponent | OptionComponent[];
@@ -73,11 +73,12 @@ const Dropdown = ({ error, children, onChange }: DropdownProps) => {
     ev.preventDefault();
     const { key } = ev;
 
-    if (
-      (collapsed && ["Enter", " "].includes(key)) ||
-      (!collapsed && key == "Escape")
-    ) {
-      setCollapsed((c) => !c);
+    if (collapsed && ["Enter", " "].includes(key)) {
+      setCollapsed(false);
+    }
+
+    if (!collapsed && key == "Escape") {
+      setCollapsed(false);
     }
   };
 
@@ -86,7 +87,7 @@ const Dropdown = ({ error, children, onChange }: DropdownProps) => {
   const onSelect = (value: string) => {
     setSelected(value);
     onChange?.(value);
-    setCollapsed(true);
+    // setCollapsed(true);
   };
 
   return (
@@ -94,7 +95,9 @@ const Dropdown = ({ error, children, onChange }: DropdownProps) => {
       <div className="relative">
         <button
           ref={containerRef}
-          onClick={() => setCollapsed((c) => !c)}
+          onClick={() => {
+            return setCollapsed(!collapsed);
+          }}
           onKeyDown={handleKeyPress}
           className={twMerge(
             "flex gap-3 items-center w-96 relative select-none z-10 bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
@@ -118,7 +121,7 @@ const Dropdown = ({ error, children, onChange }: DropdownProps) => {
           />
         </button>
         {!collapsed && (
-          <ul className="absolute animate-fade bg-white z-20 top-full mt-2 rounded-lg border-graphite-normal border w-full shadow-list">
+          <ul className="absolute animate-fade scrollbar-hide bg-white z-20 max-h-36 overflow-y-auto scroll top-full mt-2 rounded-lg border-graphite-normal border w-full shadow-list">
             {children}
           </ul>
         )}
@@ -152,7 +155,10 @@ const Option = ({ label, icon, value }: OptionProps) => {
         isSelected() && "text-primary-bold",
         "after:h-[1px] after:left-4 after:right-4 last:after:hidden after:bg-graphite-normal after:absolute after:bottom-0"
       )}
-      onClick={() => onSelect(value || label)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(value || label);
+      }}
     >
       <Icon
         icon={icon}

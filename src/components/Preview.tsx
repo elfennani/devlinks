@@ -1,6 +1,22 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useDraftState } from "../context/draft";
+
 type Props = {};
 
 const Preview = (_props: Props) => {
+  const { draftLinks } = useDraftState();
+
+  const placeholders = () => {
+    const elements = [];
+    for (let i = 0; i < 5 - draftLinks.length; i++) {
+      elements.push(
+        <div key={i} className="h-10 w-full bg-neutral-100 rounded-lg" />
+      );
+    }
+
+    return elements;
+  };
+
   return (
     <div className="w-72 max-w-full max-h-full">
       <div className="relative z-20 pt-[205%] h-0 overflow-hidden rounded">
@@ -8,7 +24,7 @@ const Preview = (_props: Props) => {
           className="absolute -z-10 top-0 left-0 right-0 bottom-0"
           src="/images/preview-section.svg"
         />
-        <div className="absolute px-8 py-16 top-0 left-0 right-0 bottom-0 flex flex-col items-stretch justify-between">
+        <div className="absolute px-8 py-16 top-0 left-0 right-0 bottom-0 flex flex-col items-stretch gap-14 overflow-hidden">
           <div className="flex flex-col gap-6 items-center">
             <div className="size-24 rounded-full bg-neutral-100" />
             <div className="flex flex-col gap-3 w-full items-center">
@@ -17,11 +33,24 @@ const Preview = (_props: Props) => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="h-10 w-full bg-neutral-100 rounded-lg" />
-            <div className="h-10 w-full bg-neutral-100 rounded-lg" />
-            <div className="h-10 w-full bg-neutral-100 rounded-lg" />
-            <div className="h-10 w-full bg-neutral-100 rounded-lg" />
-            <div className="h-10 w-full bg-neutral-100 rounded-lg" />
+            {draftLinks.slice(0, 5).map(({ appLink }) => (
+              <div
+                className="h-10 w-full rounded-lg text-white flex justify-between items-center px-3"
+                style={{ backgroundColor: appLink.color }}
+              >
+                <div className="flex items-center gap-2 text-base-s">
+                  <Icon icon={appLink.icon} fontSize={16} />
+                  {appLink.name}
+                </div>
+                <Icon icon="mdi:arrow-right" fontSize={16} />
+              </div>
+            ))}
+            {draftLinks.length > 5 && (
+              <p className="text-center text-base-s opacity-50">
+                + {draftLinks.length - 5} Links
+              </p>
+            )}
+            {placeholders()}
           </div>
         </div>
       </div>
