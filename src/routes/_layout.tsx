@@ -6,11 +6,6 @@ import Preview from "../components/Preview";
 import { DraftProvider } from "../context/draft";
 import SaveButton from "../components/SaveButton";
 
-interface Props {
-  title: string;
-  subtitle: string;
-}
-
 const HomeLayout = () => {
   const { data } = useUser();
   const { pathname } = useLocation();
@@ -51,8 +46,8 @@ const HomeLayout = () => {
           <div className="grid grid-rows-[1fr_auto] bg-white rounded-xl">
             <div className="p-10 overflow-y-auto h-0 min-h-full">
               <DraftProvider.Consumer>
-                {({ isLoading }) =>
-                  isLoading ? (
+                {([{ isLoadingProfile, isLoadingLinks }]) =>
+                  isLoadingProfile || isLoadingLinks ? (
                     <div className="w-full h-full rounded-xl bg-graphite-light animate-pulse" />
                   ) : (
                     <Outlet />

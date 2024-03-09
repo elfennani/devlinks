@@ -1,42 +1,43 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { twJoin } from "tailwind-merge";
+import useImageFile from "../../hooks/useImageFile";
 
 type Props = {
   value?: File | null;
   onChange: (file: File | undefined) => void;
+  initialBackgroundUrl?: string;
 };
 
-const ImageUpload = ({ onChange, value: file }: Props) => {
-  const [backgroundImage, setBackgroundImage] = useState<string>("");
+const ImageUpload = ({
+  onChange,
+  value: file,
+  initialBackgroundUrl,
+}: Props) => {
+  const backgroundImage = useImageFile(file);
 
-  useEffect(() => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setBackgroundImage(`url(${reader.result})`);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setBackgroundImage("");
-    }
-  }, [file]);
+  let background = `url(${backgroundImage})`;
+  const random = useMemo(() => Math.round(Math.random() * 8), []);
+
+  if (!backgroundImage && initialBackgroundUrl)
+    background = `url(${initialBackgroundUrl}?${random})`;
 
   return (
     <div>
       <label
         role="button"
         className="block select-none bg-primary-light bg-cover bg-center text-primary-bold rounded-xl text-heading-s"
-        style={{ backgroundImage }}
+        style={{ backgroundImage: background }}
       >
         <div
           className={twJoin(
             "size-48 flex items-center justify-center flex-col gap-2",
-            !!file && "bg-black bg-opacity-50 rounded-xl text-white"
+            (!!file || !!initialBackgroundUrl) &&
+              "bg-black bg-opacity-50 rounded-xl text-white"
           )}
         >
           <Icon icon="ph:image" fontSize={40} />
-          {!!file ? "Change Image" : "+ Upload Image"}
+          {!!file || !!initialBackgroundUrl ? "Change Image" : "+ Upload Image"}
         </div>
         <input
           type="file"

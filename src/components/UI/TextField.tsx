@@ -9,7 +9,7 @@ type InputProps = React.DetailedHTMLProps<
 
 export type TextFieldProps = {
   icon?: string;
-  error?: string;
+  error?: string | null | false;
 } & InputProps;
 
 const TextField = (
@@ -31,7 +31,7 @@ const TextField = (
         ref={ref}
         {...props}
         className={twMerge(
-          "placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 text-graphite-bolder text-base-m flex-1",
+          "placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 !text-graphite-bolder text-base-m flex-1",
           error && "text-error text-base-m"
         )}
       />

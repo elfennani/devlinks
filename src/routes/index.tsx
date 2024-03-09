@@ -1,75 +1,33 @@
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
-import links, { AppLink } from "../links";
+import { AppLink } from "../links";
 import LinkCard from "../components/LinkCard";
-import { useDraftState } from "../context/draft";
+import { useDraftDispatch, useDraftState } from "../context/draft";
 import { useMutationState } from "@tanstack/react-query";
 
 const HomePage = () => {
-  const { draftLinks, setDraftLinks, isLoading } = useDraftState();
-  const pendingSavings = useMutationState({
+  const { links } = useDraftState();
+  const dispatch = useDraftDispatch();
+  const pendingSavingMutations = useMutationState({
     filters: { exact: true, mutationKey: ["links", "save"], status: "pending" },
   });
 
-  const handleLinkChange = (id: number) => (appLink: AppLink) => {
-    setDraftLinks((links) => {
-      return links.map((link) => {
-        if (link.id == id) {
-          return {
-            ...link,
-            appLink,
-            value: link.appLink.name == appLink.name ? link.value : "",
-          };
-        }
+  const handleLinkChange = (id: number) => (appLink: AppLink) =>
+    dispatch({ type: "EDIT_LINK_LINK", payload: { id, appLink } });
 
-        return link;
-      });
+  const handleValueChange = (id: number) => (value: string) =>
+    dispatch({
+      type: "EDIT_LINK_VALUE",
+      payload: {
+        id,
+        value,
+      },
     });
-  };
 
-  const handleValueChange = (id: number) => (value: string) => {
-    setDraftLinks((links) => {
-      return links.map((link) => {
-        if (link.id == id) {
-          return {
-            ...link,
-            value: value,
-          };
-        }
-
-        return link;
-      });
-    });
-  };
-
-  function addLinkHandler() {
-    setDraftLinks((draftLinks) => {
-      const firstUnusedLink = links.find(
-        (link) => !draftLinks.some(({ appLink }) => appLink.name == link.name)
-      )!!;
-      const id =
-        draftLinks.reduce((prev, curr) => {
-          return prev <= curr.id ? curr.id : prev;
-        }, -1) + 1;
-      console.log(id);
-
-      return [
-        ...draftLinks,
-        {
-          appLink: firstUnusedLink,
-          id,
-          value: "",
-        },
-      ];
-    });
-  }
+  const addLinkHandler = () => dispatch({ type: "ADD_LINK" });
 
   const handleRemove = (id: number) => () =>
-    setDraftLinks((links) => {
-      return links
-        .filter((l) => l.id != id)
-        .map((l) => ({ ...l, id: l.id <= id ? l.id : l.id - 1 }));
-    });
+    dispatch({ type: "REMOVE_LINK", payload: { id } });
 
   function checkLinkErrors(
     appLink: AppLink,
@@ -79,7 +37,10 @@ const HomePage = () => {
       return "Can’t be empty";
     }
 
-    if (!appLink.regex.find((regex) => regex.test(value))) {
+    if (
+      appLink.regex.length != 0 &&
+      !appLink.regex.find((regex) => regex.test(value))
+    ) {
       return "Pattern doesn't match";
     }
   }
@@ -93,9 +54,9 @@ const HomePage = () => {
       <Button
         label="+ Add new link"
         onClick={addLinkHandler}
-        disabled={isLoading || pendingSavings.length > 0}
+        disabled={pendingSavingMutations.length > 0}
       />
-      {!draftLinks.length && (
+      {!links.length && (
         <div className="flex gap-10 flex-col items-center justify-center p-5 rounded-xl flex-1 min-h-fit bg-graphite-light">
           <img
             src="/images/illustration-empty.svg"
@@ -115,7 +76,7 @@ const HomePage = () => {
         </div>
       )}
 
-      {draftLinks.map(({ appLink, value, id }) => (
+      {links.map(({ appLink, value, id }) => (
         <LinkCard
           key={`${id}-${appLink.name}`}
           id={id}
@@ -125,8 +86,8 @@ const HomePage = () => {
           onChangeValue={handleValueChange(id)}
           onRemove={handleRemove(id)}
           duplicate={
-            draftLinks.filter((draft) => draft.appLink.name == appLink.name)
-              .length > 1
+            links.filter((draft) => draft.appLink.name == appLink.name).length >
+            1
           }
           error={checkLinkErrors(appLink, value)}
         />
