@@ -71,8 +71,21 @@ const HomePage = () => {
         .map((l) => ({ ...l, id: l.id <= id ? l.id : l.id - 1 }));
     });
 
+  function checkLinkErrors(
+    appLink: AppLink,
+    value: string
+  ): string | undefined {
+    if (value.trim() == "") {
+      return "Can’t be empty";
+    }
+
+    if (!appLink.regex.find((regex) => regex.test(value))) {
+      return "Pattern doesn't match";
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-10 h-full">
+    <div className="flex flex-col gap-10 min-h-full">
       <Heading
         title="Customize your links"
         subtitle="Add/edit/remove links below and then share all your profiles with the world!"
@@ -115,6 +128,7 @@ const HomePage = () => {
             draftLinks.filter((draft) => draft.appLink.name == appLink.name)
               .length > 1
           }
+          error={checkLinkErrors(appLink, value)}
         />
       ))}
     </div>

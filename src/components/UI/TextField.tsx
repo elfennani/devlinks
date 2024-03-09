@@ -20,7 +20,8 @@ const TextField = (
     <div
       className={twMerge(
         "flex gap-3 items-center overflow-hidden bg-white px-4 rounded-lg border-graphite-normal border focus-within:border-primary-bold focus-within:shadow-focused",
-        error && "!border-error focus-within:!shadow-none"
+        error && "!border-error focus-within:!shadow-none",
+        props.className
       )}
     >
       {icon && (
@@ -31,8 +32,7 @@ const TextField = (
         {...props}
         className={twMerge(
           "placeholder:text-opacity-50 placeholder:text-base-m outline-none py-3 w-full min-w-32 text-graphite-bolder text-base-m flex-1",
-          error && "text-error text-base-m",
-          props.className
+          error && "text-error text-base-m"
         )}
       />
       {error && <p className="text-base-s text-error line-clamp-2">{error}</p>}

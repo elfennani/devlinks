@@ -13,6 +13,7 @@ type Props = {
   link: AppLink;
   id: number;
   duplicate?: boolean;
+  error?: string;
 };
 
 const LinkCard = ({
@@ -23,6 +24,7 @@ const LinkCard = ({
   value,
   id,
   duplicate = false,
+  error,
 }: Props) => {
   return (
     <section className="p-5 bg-graphite-light rounded-xl flex flex-col gap-3">
@@ -60,6 +62,7 @@ const LinkCard = ({
         placeholder="e.g. https://www.github.com/johnappleseed"
         value={value}
         onChange={(e) => onChangeValue(e.target.value)}
+        error={error}
       />
     </section>
   );

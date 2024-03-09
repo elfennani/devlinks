@@ -19,11 +19,13 @@ type DraftContextProps = {
   draftLinks: DraftLink[];
   setDraftLinks: React.Dispatch<React.SetStateAction<DraftLink[]>>;
   isLoading: boolean;
+  isError: boolean;
   refetch: () => void;
 };
 
 const DraftContext = createContext<DraftContextProps>({
   isLoading: false,
+  isError: false,
   draftLinks: [],
   setDraftLinks: () => {},
   refetch: () => {},
@@ -35,7 +37,7 @@ export const DraftProvider = ({
   children: ReactNode | ReactNode[];
 }) => {
   const [draftLinks, setDraftLinks] = useState<DraftLink[]>([]);
-  const { data, isLoading, refetch, isSuccess } = useQuery({
+  const { data, isLoading, refetch, isSuccess, isError } = useQuery({
     queryKey: ["links"],
     queryFn: async () => {
       await supabase.auth.initialize();
@@ -80,10 +82,13 @@ export const DraftProvider = ({
         setDraftLinks,
         isLoading,
         refetch,
+        isError,
       }}
       children={children}
     />
   );
 };
+
+DraftProvider.Consumer = DraftContext.Consumer;
 
 export const useDraftState = () => useContext(DraftContext);
