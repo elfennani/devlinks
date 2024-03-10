@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./routes";
 import HomeLayout from "./routes/_layout";
 import ProfilePage from "./routes/profile";
+import PreviewPage from "./routes/preview";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ const AppRouter = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/link/:uid" Component={PreviewPage} />
           <Route path="/" Component={RootLayout}>
             <Route path="/" element={<HomeLayout />}>
               <Route index Component={HomePage} />

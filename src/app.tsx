@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "./tailwind.css";
 import AppRouter from "./router";
+import { Toaster } from "sonner";
 
 // Register the router instance for type safety
 // Render the app
@@ -11,6 +12,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <AppRouter />
+      <Toaster richColors position="bottom-center" theme="dark" closeButton />
     </StrictMode>
   );
 }

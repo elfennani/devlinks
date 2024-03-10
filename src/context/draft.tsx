@@ -30,6 +30,7 @@ interface DraftState {
   isLoadingProfile: boolean;
   error?: string;
   file?: File;
+  modified: boolean;
 }
 
 type DraftAction =
@@ -48,6 +49,7 @@ const initialState: DraftState = {
   isLoadingLinks: true,
   isLoadingProfile: true,
   profile: {},
+  modified: false,
 };
 
 const DraftContext = createContext<DraftContextProps>([initialState, () => {}]);
@@ -72,6 +74,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
     const { id, value } = payload;
     return {
       ...state,
+      modified: true,
       links: state.links.map((link) => {
         if (link.id == id) {
           return {
@@ -89,6 +92,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
 
     return {
       ...state,
+      modified: true,
       links: state.links.map((link) => {
         if (link.id == id) {
           return {
@@ -118,6 +122,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
 
     return {
       ...state,
+      modified: true,
       links: [...state.links, newLink],
     };
   }
@@ -125,6 +130,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
     const { id } = payload;
     return {
       ...state,
+      modified: true,
       links: state.links
         .filter((l) => l.id != id)
         .map((l) => ({ ...l, id: l.id <= id ? l.id : l.id - 1 })),
@@ -141,6 +147,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
     const { key, value } = payload;
     return {
       ...state,
+      modified: true,
       profile: {
         ...state.profile,
         [key]: value,
@@ -151,6 +158,7 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
   if (type == "SELECT_FILE") {
     return {
       ...state,
+      modified: true,
       file: payload,
     };
   }

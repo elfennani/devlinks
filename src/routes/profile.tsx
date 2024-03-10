@@ -23,14 +23,14 @@ const ProfilePage = () => {
     };
 
   return (
-    <div className="flex flex-col gap-10 h-full">
+    <div className="flex flex-col gap-10 min-h-full max-md:gap-6">
       <Heading
         title="Profile Details"
         subtitle="Add your details to create a personal touch to your profile."
       />
-      <section className="flex rounded-xl gap-4 items-center text-base-m text-graphite-bold p-5 bg-graphite-light">
-        <p className="w-60">Profile picture</p>
-        <div className="flex flex-1 items-center gap-6">
+      <section className="flex max-md:flex-col rounded-xl gap-4 items-center text-base-m text-graphite-bold p-5 bg-graphite-light">
+        <p className="w-60 max-md:w-full">Profile picture</p>
+        <div className="flex flex-1 items-center gap-6 max-md:flex-col max-md:items-start">
           <ImageUpload
             onChange={(file) =>
               dispatch({ type: "SELECT_FILE", payload: file })
@@ -48,33 +48,33 @@ const ProfilePage = () => {
         </div>
       </section>
       <section className="flex flex-col rounded-xl gap-3 items-center text-base-m text-graphite-bold p-5 bg-graphite-light">
-        <label className="w-full flex items-center">
-          <span className="block w-60">First name*</span>
+        <label className="w-full flex items-center max-md:flex-col">
+          <span className="block max-md:w-full w-60">First name*</span>
           <TextField
             onChange={handleChange("firstName")}
-            className="flex-1"
+            className="flex-1 w-full"
             type="text"
             placeholder="e.g. John"
             value={firstName}
             error={!firstName?.trim() && "Can't be empty"}
           />
         </label>
-        <label className="w-full flex items-center">
-          <span className="block w-60">Last name*</span>
+        <label className="w-full flex items-center max-md:flex-col">
+          <span className="block max-md:w-full w-60">Last name*</span>
           <TextField
             onChange={handleChange("lastName")}
-            className="flex-1"
+            className="flex-1 w-full"
             type="text"
             placeholder="e.g. Appleseed"
             value={lastName}
             error={!lastName?.trim() && "Can't be empty"}
           />
         </label>
-        <label className="w-full flex items-center">
-          <span className="block w-60">Email</span>
+        <label className="w-full flex items-center max-md:flex-col">
+          <span className="block max-md:w-full w-60">Email</span>
           <TextField
             onChange={handleChange("email")}
-            className="flex-1"
+            className="flex-1 w-full"
             type="text"
             value={email || ""}
             placeholder="e.g. email@example.com"

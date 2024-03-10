@@ -3,7 +3,6 @@ import links, { AppLink } from "../links";
 import LabeledTextField from "./UI/LabeledTextField";
 import LabeledDropdown from "./UI/LabeledDropdown";
 import Dropdown from "./UI/Dropdown";
-import supabase from "../services/supabase";
 
 type Props = {
   onChangeValue: (value: string) => void;
@@ -63,6 +62,7 @@ const LinkCard = ({
         value={value}
         onChange={(e) => onChangeValue(e.target.value)}
         error={error}
+        autoFocus
       />
     </section>
   );

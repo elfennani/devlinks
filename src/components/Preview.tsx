@@ -42,10 +42,10 @@ const Preview = (_props: Props) => {
                   .from("avatars")
                   .getPublicUrl(`/${data?.data.user?.id}`).data.publicUrl
               }
-              className="size-24 rounded-full bg-neutral-100 object-cover"
+              className="size-24 rounded-full bg-neutral-100 object-cover border-2 border-primary-bold"
             />
             <div className="flex flex-col gap-1 w-full items-center text-base-s">
-              <div className="flex w-full items-center justify-center gap-2 text-heading-s">
+              <div className="flex w-full items-center justify-center gap-2 text-heading-s text-xl">
                 {firstName || (
                   <div className="w-2/5 h-4 rounded-full bg-neutral-100" />
                 )}{" "}
@@ -53,7 +53,8 @@ const Preview = (_props: Props) => {
                   <div className="w-1/3 h-4 rounded-full bg-neutral-100" />
                 )}
               </div>
-              {email || (
+              {!!email && <span className="text-graphite-bold">{email}</span>}
+              {!email && (
                 <div className="w-2/5 h-2 rounded-full bg-neutral-100" />
               )}
             </div>

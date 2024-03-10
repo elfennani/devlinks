@@ -5,6 +5,7 @@ import Button from "./UI/Button";
 import { Database } from "../services/types";
 import useUser from "../hooks/useUser";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 type LinkInsert = Database["public"]["Tables"]["links"]["Insert"];
 
@@ -19,9 +20,10 @@ const SaveButton = () => {
     profile: { firstName, lastName, email },
     error: draftError,
     file,
+    modified,
   } = useDraftState();
   const { data } = useUser();
-  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ["links", "save"],
     mutationFn: async () => {
       if (!data) throw new Error("User not loaded in yet");
@@ -82,17 +84,21 @@ const SaveButton = () => {
       });
       if (profileError) throw new Error(profileError.message);
     },
+    onError: (error) => toast.error(error.message),
+    onSuccess: () => toast.success("Saved Successfully"),
   });
 
   return (
-    <div className="flex items-center gap-8">
-      {isError && <p className="text-base-m text-error">{error.message}</p>}
-      {isSuccess && <p className="text-base-m text-green-500">Saved!</p>}
+    <div className="flex items-center max-md:flex-col max-md:items-stretch md:justify-end w-full gap-8">
       <Button
         label="Save"
         primary
         disabled={
-          isPending || isLoadingLinks || isLoadingProfile || !!draftError
+          isPending ||
+          isLoadingLinks ||
+          isLoadingProfile ||
+          !!draftError ||
+          !modified
         }
         onClick={() => mutate()}
       />

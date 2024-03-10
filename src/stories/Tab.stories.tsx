@@ -33,26 +33,21 @@ export const Active: Story = {
 
 export const Multiple: Story = {
   render: () => {
-    const [active, setActive] = useState(0);
+    const [active, _setActive] = useState(0);
     return (
       <div className="flex gap-2">
-        <Tab
-          icon="ph:link-bold"
-          label="Links"
-          active={active == 0}
-          onClick={() => setActive(0)}
-        />
+        <Tab icon="ph:link-bold" label="Links" href="#" active={active == 0} />
         <Tab
           icon="ph:user-circle-bold"
           label="Profile Details"
           active={active == 1}
-          onClick={() => setActive(1)}
+          href="#"
         />
         <Tab
           icon="teenyicons:github-solid"
           label="GitHub"
           active={active == 2}
-          onClick={() => setActive(2)}
+          href="#"
         />
       </div>
     );

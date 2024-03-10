@@ -20,7 +20,7 @@ const Tab = ({ active = false, icon, label, href }: Props) => {
       )}
     >
       <Icon icon={icon} fontSize={20} />
-      {label}
+      <span className="max-md:hidden">{label}</span>
     </Link>
   );
 };
