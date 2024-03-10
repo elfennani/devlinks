@@ -1,4 +1,9 @@
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import shortUUID from "short-uuid";
 import supabase from "../services/supabase";
 import { useQuery } from "@tanstack/react-query";
@@ -7,8 +12,10 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import useUser from "../hooks/useUser";
 import Button from "../components/UI/Button";
 import useTitle from "../hooks/useTitle";
+import { toast } from "sonner";
 
 const PreviewPage = () => {
+  const navigate = useNavigate();
   const { uid } = useParams();
   const [params] = useSearchParams();
   const isPreview = params.has("preview");
@@ -53,13 +60,35 @@ const PreviewPage = () => {
   if (isLoading || (isPreview && isLoadingUser)) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
 
+  const handleSharing = async () => {
+    const id = shortUUID().fromUUID(userData?.data.user?.id!!);
+    const domain = document.location.host;
+    const link = `${domain}/link/${id}`;
+
+    try {
+      navigator.clipboard.writeText(link);
+      toast.success("Copied successfully!");
+    } catch (error) {
+      toast.error("Copying works only over HTTPS");
+    }
+  };
+
   return (
     <div className="relative md:flex flex-col items-center justify-center min-h-svh md:p-4">
       <div className="absolute top-0 left-0 -z-10 right-0 h-96 bg-primary-bold max-md:hidden rounded-b-[2rem]" />
       {isPreview && !!userData?.data.user && (
         <div className="md:absolute flex justify-between gap-4 top-6 left-6 right-6 bg-white rounded-xl p-4">
-          <Button label="Back to Editor" className="max-md:flex-1" />
-          <Button label="Share Link" primary className="max-md:flex-1" />
+          <Button
+            label="Back to Editor"
+            className="max-md:flex-1"
+            onClick={() => navigate("/")}
+          />
+          <Button
+            label="Share Link"
+            primary
+            className="max-md:flex-1"
+            onClick={handleSharing}
+          />
         </div>
       )}
       <div className="flex flex-col gap-14 p-4 md:my-32 bg-white max-md:min-h-svh md:shadow-list md:rounded-3xl md:w-[400px] px-14 py-12 max-w-full">
@@ -91,6 +120,7 @@ const PreviewPage = () => {
                     backgroundColor: color,
                   }}
                   className="p-4 w-full text-white rounded-xl text-base-m flex items-center gap-2"
+                  target="_blank"
                 >
                   <Icon icon={icon} fontSize={20} />
                   <span className="flex-1 text-start">{link.name}</span>
