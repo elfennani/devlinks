@@ -13,6 +13,7 @@ import useUser from "../hooks/useUser";
 import Button from "../components/UI/Button";
 import useTitle from "../hooks/useTitle";
 import { toast } from "sonner";
+import PreviewSkeleton from "../components/Skeleton/PreviewSkeleton";
 
 const PreviewPage = () => {
   const navigate = useNavigate();
@@ -57,7 +58,8 @@ const PreviewPage = () => {
   if (!uid) return <Navigate to="/" />;
   const uuid = shortUUID().toUUID(uid);
 
-  if (isLoading || (isPreview && isLoadingUser)) return <div>Loading...</div>;
+  if (isLoading || (isPreview && isLoadingUser))
+    return <PreviewSkeleton uuid={uuid} />;
   if (isError) return <div>Error: {error.message}</div>;
 
   const handleSharing = async () => {

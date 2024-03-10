@@ -12,7 +12,13 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <AppRouter />
-      <Toaster richColors position="bottom-center" theme="dark" closeButton />
+      <Toaster
+        richColors
+        position="bottom-center"
+        theme="dark"
+        closeButton
+        duration={5000}
+      />
     </StrictMode>
   );
 }
