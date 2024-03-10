@@ -7,6 +7,8 @@ import {
 } from "react";
 import links, { AppLink } from "../links";
 import supabase from "../services/supabase";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export interface DraftLink {
   id: number;
@@ -36,6 +38,7 @@ interface DraftState {
 type DraftAction =
   | { type: "ADD_LINK"; payload?: undefined }
   | { type: "LOAD_LINKS"; payload: DraftLink[] }
+  | { type: "LOAD_DATA"; payload: { links: DraftLink[]; profile: Profile } }
   | { type: "REMOVE_LINK"; payload: { id: number } }
   | { type: "EDIT_LINK_LINK"; payload: { id: number; appLink: AppLink } }
   | { type: "EDIT_LINK_VALUE"; payload: { id: number; value: string } }
@@ -56,17 +59,11 @@ const DraftContext = createContext<DraftContextProps>([initialState, () => {}]);
 
 function draftReducer(state: DraftState, action: DraftAction): DraftState {
   const { type, payload } = action;
-  if (type == "LOAD_LINKS") {
+  if (type == "LOAD_DATA") {
     return {
       ...state,
-      links: payload,
+      ...payload,
       isLoadingLinks: false,
-    };
-  }
-  if (type == "LOAD_PROFILE") {
-    return {
-      ...state,
-      profile: payload,
       isLoadingProfile: false,
     };
   }
@@ -172,14 +169,9 @@ export const DraftProvider = ({
   children: ReactNode | ReactNode[];
 }) => {
   const [state, dispatch] = useReducer(draftReducer, initialState);
-
-  useEffect(() => {
-    loadLinks();
-    loadProfile();
-  }, []);
-
-  async function loadLinks() {
-    try {
+  const { data, isSuccess, isError, error } = useQuery({
+    queryKey: ["links", "profile"],
+    queryFn: async () => {
       await supabase.auth.initialize();
       const {
         data: { user },
@@ -193,55 +185,45 @@ export const DraftProvider = ({
         .eq("user_id", user.id);
       if (error) throw new Error(error.message);
 
-      dispatch({
-        type: "LOAD_LINKS",
-        payload: data
+      const { data: profileData, error: profileError } = await supabase
+        .from("profile")
+        .select()
+        .eq("id", user.id);
+      if (profileError) throw new Error(profileError.message);
+      const profile = profileData?.[0];
+
+      return {
+        links: data
           .sort((a, b) => a.order - b.order)
           .map((link) => ({
             appLink: links.find((l) => l.name == link.name)!!,
             id: link.order,
             value: link.link,
           })),
-      });
-    } catch (error) {
-      dispatch({
-        type: "GLOBAL_ERROR",
-        payload: (error as Error)?.message,
-      });
-    }
-  }
-
-  async function loadProfile() {
-    try {
-      await supabase.auth.initialize();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("User not logged in");
-
-      const { data, error } = await supabase
-        .from("profile")
-        .select()
-        .eq("id", user.id);
-      if (error) throw new Error(error.message);
-      const profile = data?.[0];
-
-      dispatch({
-        type: "LOAD_PROFILE",
-        payload: {
+        profile: {
           email: profile?.email,
           firstName: profile?.first_name,
           lastName: profile?.last_name,
         },
-      });
-    } catch (error) {
+      };
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
       dispatch({
-        type: "GLOBAL_ERROR",
-        payload: (error as Error)?.message,
+        type: "LOAD_DATA",
+        payload: data,
       });
     }
-  }
+  }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error.message);
+      toast.error("Failed to load data, refresh page!");
+    }
+  }, [isError, error]);
 
   return (
     <DraftContext.Provider value={[state, dispatch]} children={children} />
