@@ -73,6 +73,15 @@ const SaveButton = () => {
 
         if (avatarError) throw new Error(avatarError.message);
       }
+      const names = links.map((l) => l.appLink.name).join(",");
+      const { error: deleteError } = await supabase
+        .from("links")
+        .delete()
+        .eq("user_id", user.id)
+        .not("name", "in", `(${names})`);
+
+      if (deleteError) throw new Error(deleteError.message);
+
       const { error } = await supabase.from("links").upsert(mapLinks);
       if (error) throw new Error(error.message);
 
