@@ -40,7 +40,7 @@ const LinkCard = forwardRef(
       <section
         {...props}
         ref={ref}
-        className="p-5 bg-graphite-light rounded-xl flex flex-col gap-3"
+        className={`p-5 bg-graphite-light rounded-xl flex flex-col gap-3 mb-10 ${props.className}`}
       >
         <div className="flex justify-between items-center text-graphite-bold">
           <div className="flex gap-4 items-center text-heading-s font-bold">
