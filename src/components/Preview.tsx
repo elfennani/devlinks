@@ -60,19 +60,22 @@ const Preview = (_props: Props) => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            {links.slice(0, 5).map(({ appLink }) => (
-              <div
-                className="h-10 w-full rounded-lg text-white flex justify-between items-center px-3"
-                style={{ backgroundColor: appLink.color }}
-                key={appLink.name}
-              >
-                <div className="flex items-center gap-2 text-base-s">
-                  <Icon icon={appLink.icon} fontSize={16} />
-                  {appLink.name}
+            {links
+              .sort((a, b) => a.id - b.id)
+              .slice(0, 5)
+              .map(({ appLink }) => (
+                <div
+                  className="h-10 w-full rounded-lg text-white flex justify-between items-center px-3"
+                  style={{ backgroundColor: appLink.color }}
+                  key={appLink.name}
+                >
+                  <div className="flex items-center gap-2 text-base-s">
+                    <Icon icon={appLink.icon} fontSize={16} />
+                    {appLink.name}
+                  </div>
+                  <Icon icon="mdi:arrow-right" fontSize={16} />
                 </div>
-                <Icon icon="mdi:arrow-right" fontSize={16} />
-              </div>
-            ))}
+              ))}
             {links.length > 5 && (
               <p className="text-center text-base-s opacity-50">
                 + {links.length - 5} Links

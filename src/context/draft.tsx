@@ -37,15 +37,14 @@ interface DraftState {
 
 type DraftAction =
   | { type: "ADD_LINK"; payload?: undefined }
-  | { type: "LOAD_LINKS"; payload: DraftLink[] }
   | { type: "LOAD_DATA"; payload: { links: DraftLink[]; profile: Profile } }
   | { type: "REMOVE_LINK"; payload: { id: number } }
   | { type: "EDIT_LINK_LINK"; payload: { id: number; appLink: AppLink } }
   | { type: "EDIT_LINK_VALUE"; payload: { id: number; value: string } }
   | { type: "GLOBAL_ERROR"; payload: string }
-  | { type: "LOAD_PROFILE"; payload: Profile }
   | { type: "EDIT_PROFILE"; payload: { key: keyof Profile; value: string } }
-  | { type: "SELECT_FILE"; payload: File | undefined };
+  | { type: "SELECT_FILE"; payload: File | undefined }
+  | { type: "MOVE_LINK"; payload: { start: number; end: number } };
 
 const initialState: DraftState = {
   links: [],
@@ -160,6 +159,42 @@ function draftReducer(state: DraftState, action: DraftAction): DraftState {
     };
   }
 
+  if (type == "MOVE_LINK") {
+    const { start, end } = payload;
+    if (end - start > 0) {
+      return {
+        ...state,
+        modified: true,
+        links: state.links.map((link) => {
+          let id = link.id;
+          if (link.id == start) id = end;
+
+          if (link.id > start && link.id <= end) id = link.id - 1;
+
+          return {
+            ...link,
+            id,
+          };
+        }),
+      };
+    } else {
+      return {
+        ...state,
+        modified: true,
+        links: state.links.map((link) => {
+          let id = link.id;
+          if (link.id == start) id = end;
+
+          if (link.id >= end && link.id < start) id = link.id + 1;
+
+          return {
+            ...link,
+            id,
+          };
+        }),
+      };
+    }
+  }
   return state;
 }
 
