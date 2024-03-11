@@ -77,7 +77,6 @@ const LinkCard = forwardRef(
           value={value}
           onChange={(e) => onChangeValue(e.target.value)}
           error={error}
-          autoFocus
         />
       </section>
     );
